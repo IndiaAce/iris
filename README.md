@@ -13,12 +13,6 @@
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-- [Installation](#installation)
-- [Usage](#usage)
-- [File Structure](#file-structure)
-- [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Getting Started
 
