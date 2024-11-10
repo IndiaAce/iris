@@ -142,3 +142,4 @@ def delete_mapping(mapping_id):
 
 if __name__ == '__main__':
     setup_database()
+    print("Database setup completed successfully.")

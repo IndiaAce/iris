@@ -16,6 +16,5 @@
 
 ## Getting Started
 
-### Prerequisites
 
 under construction - will fill this out when I can
