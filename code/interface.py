@@ -57,7 +57,7 @@ class IntelligenceApp:
     def load_pir_data(self):
         for row in self.pir_list.get_children():
             self.pir_list.delete(row)
-        connection = sqlite3.connect('intelligence.db')
+        connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM PIRs")
         rows = cursor.fetchall()
@@ -133,7 +133,7 @@ class IntelligenceApp:
     def load_source_data(self):
         for row in self.source_list.get_children():
             self.source_list.delete(row)
-        connection = sqlite3.connect('intelligence.db')
+        connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM Sources")
         rows = cursor.fetchall()

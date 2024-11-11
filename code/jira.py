@@ -11,7 +11,7 @@ JIRA_HEADERS = {
 
 # Function to create a Jira ticket based on PIR details
 def create_jira_ticket(pir_id):
-    connection = sqlite3.connect('intelligence.db')
+    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM PIRs WHERE id = ?", (pir_id,))
     pir = cursor.fetchone()
@@ -50,7 +50,7 @@ def create_jira_ticket(pir_id):
 
 # Function to update Jira ticket status when PIR status changes
 def update_jira_ticket(pir_id):
-    connection = sqlite3.connect('intelligence.db')
+    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM PIRs WHERE id = ?", (pir_id,))
     pir = cursor.fetchone()

@@ -5,7 +5,7 @@ from reportlab.lib import pagesizes
 
 # Function to export PIR data to CSV
 def export_pir_to_csv(csv_filename):
-    connection = sqlite3.connect('intelligence.db')
+    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
     cursor = connection.cursor()
     
     cursor.execute('''
@@ -28,7 +28,7 @@ def export_pir_to_csv(csv_filename):
 
 # Function to generate PDF report summarizing PIRs
 def generate_pir_pdf_report(pdf_filename):
-    connection = sqlite3.connect('intelligence.db')
+    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
     cursor = connection.cursor()
     
     # Fetch all PIRs and their mapping information

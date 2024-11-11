@@ -11,7 +11,7 @@ def map_pir_to_source(pir_id, source_id):
 
 # Function to identify PIRs without sufficient mapped sources (intelligence gaps)
 def identify_unmet_pirs():
-    connection = sqlite3.connect('intelligence.db')
+    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
     cursor = connection.cursor()
     
     # Fetch all PIRs
