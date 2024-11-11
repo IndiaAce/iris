@@ -135,7 +135,7 @@ def add_mapping(pir_id, source_id):
     connection.close()
 
 def delete_mapping(mapping_id):
-    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
+    connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db') 
     cursor = connection.cursor()
     cursor.execute('DELETE FROM Mappings WHERE mapping_id = ?', (mapping_id,))
     connection.commit()

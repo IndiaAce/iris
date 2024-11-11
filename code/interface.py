@@ -57,7 +57,7 @@ class IntelligenceApp:
     def load_pir_data(self):
         for row in self.pir_list.get_children():
             self.pir_list.delete(row)
-        connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
+        connection = sqlite3.connect(r'C:\Users\lukew\OneDrive\Documents\dev_link\Threat\iris\intelligence.db')
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM PIRs")
         rows = cursor.fetchall()
@@ -81,15 +81,36 @@ class IntelligenceApp:
         if not selected_item:
             messagebox.showerror("Error", "Please select a PIR to edit")
             return
-        pir_id = self.pir_list.item(selected_item)['values'][0]
-        description = self.description_entry.get()
-        priority = self.priority_entry.get()
-        if description and priority:
-            update_pir(pir_id, description=description, priority_level=priority)
-            self.load_pir_data()
-        else:
-            messagebox.showerror("Error", "All fields are required")
 
+        item = self.pir_list.item(selected_item)
+        pir_id = item["values"][0]  # Assuming PIR ID is the first value
+
+        # Populating the form fields with existing data for editing
+        self.description_entry.delete(0, tk.END)
+        self.description_entry.insert(0, item["values"][1])
+        
+        self.priority_entry.delete(0, tk.END)
+        self.priority_entry.insert(0, item["values"][2])
+
+        def update_pir_data():
+            new_description = self.description_entry.get()
+            new_priority = self.priority_entry.get()
+
+            # Connect to the database to perform the update
+            connection = sqlite3.connect(r'C:\Users\lukew\OneDrive\Documents\dev_link\Threat\iris\intelligence.db')
+            cursor = connection.cursor()
+            cursor.execute(
+                "UPDATE PIRs SET description = ?, priority_level = ? WHERE id = ?",
+                (new_description, new_priority, pir_id)
+            )
+            connection.commit()
+            connection.close()
+            self.load_pir_data()
+            self.description_entry.delete(0, tk.END)
+            self.priority_entry.delete(0, tk.END)
+
+        # Updating the PIR directly after editing
+        update_pir_data()
     def delete_pir(self):
         selected_item = self.pir_list.selection()
         if not selected_item:
@@ -133,7 +154,7 @@ class IntelligenceApp:
     def load_source_data(self):
         for row in self.source_list.get_children():
             self.source_list.delete(row)
-        connection = sqlite3.connect(r'C:\\Users\\lukew\\OneDrive\\Documents\\dev_link\\Threat\\iris\\intelligence.db')
+        connection = sqlite3.connect(r'C:\Users\lukew\OneDrive\Documents\dev_link\Threat\iris\intelligence.db')
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM Sources")
         rows = cursor.fetchall()
@@ -180,8 +201,69 @@ class IntelligenceApp:
         
     def setup_mapping_tab(self):
         # Mapping Management Section
-        ttk.Label(self.mapping_tab, text="Mapping PIRs to Sources (Coming Soon)").pack(pady=20)
-        # Placeholder for future mapping logic
+        self.mapping_list = ttk.Treeview(self.mapping_tab, columns=("PIR ID", "PIR Description", "Source ID", "Source Name"), show="headings")
+        self.mapping_list.heading("PIR ID", text="PIR ID")
+        self.mapping_list.heading("PIR Description", text="PIR Description")
+        self.mapping_list.heading("Source ID", text="Source ID")
+        self.mapping_list.heading("Source Name", text="Source Name")
+        self.mapping_list.pack(expand=True, fill='both')
+        
+        self.load_mapping_data()
+        
+        # Mapping Form
+        self.mapping_form_frame = ttk.Frame(self.mapping_tab)
+        self.mapping_form_frame.pack(pady=10)
+
+        ttk.Label(self.mapping_form_frame, text="PIR ID").grid(row=0, column=0, padx=5, pady=5)
+        self.pir_id_entry = ttk.Entry(self.mapping_form_frame, width=30)
+        self.pir_id_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        ttk.Label(self.mapping_form_frame, text="Source ID").grid(row=1, column=0, padx=5, pady=5)
+        self.source_id_entry = ttk.Entry(self.mapping_form_frame, width=30)
+        self.source_id_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        ttk.Button(self.mapping_form_frame, text="Add Mapping", command=self.add_mapping).grid(row=2, column=0, padx=5, pady=5)
+        ttk.Button(self.mapping_form_frame, text="Delete Mapping", command=self.delete_mapping).grid(row=2, column=1, padx=5, pady=5)
+        
+    def load_mapping_data(self):
+        for row in self.mapping_list.get_children():
+            self.mapping_list.delete(row)
+        connection = sqlite3.connect(r'C:\Users\lukew\OneDrive\Documents\dev_link\Threat\iris\intelligence.db')
+        cursor = connection.cursor()
+        cursor.execute('''
+            SELECT m.pir_id, p.description, m.source_id, s.name 
+            FROM Mappings m
+            JOIN PIRs p ON m.pir_id = p.id
+            JOIN Sources s ON m.source_id = s.source_id
+        ''')
+        rows = cursor.fetchall()
+        for row in rows:
+            self.mapping_list.insert("", "end", values=row)
+        connection.close()
+
+    def add_mapping(self):
+        pir_id = self.pir_id_entry.get()
+        source_id = self.source_id_entry.get()
+        if pir_id and source_id:
+            add_mapping(pir_id, source_id)
+            self.load_mapping_data()
+            self.pir_id_entry.delete(0, tk.END)
+            self.source_id_entry.delete(0, tk.END)
+        else:
+            messagebox.showerror("Error", "All fields are required")
+
+    def delete_mapping(self):
+        selected_item = self.mapping_list.selection()
+        if not selected_item:
+            messagebox.showerror("Error", "Please select a mapping to delete")
+            return
+        pir_id, source_id = self.mapping_list.item(selected_item)['values'][0:2]
+        connection = sqlite3.connect(r'C:\Users\lukew\OneDrive\Documents\dev_link\Threat\iris\intelligence.db')
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM Mappings WHERE pir_id = ? AND source_id = ?", (pir_id, source_id))
+        connection.commit()
+        connection.close()
+        self.load_mapping_data()
 
 if __name__ == "__main__":
     root = tk.Tk()
